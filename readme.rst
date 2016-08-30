@@ -37,8 +37,5 @@ build.py CLI specifications
 
 For the complete list of options, please run:
 
-::
 ./build.py --help
-or
-./build.py build --help
 
