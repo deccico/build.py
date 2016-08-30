@@ -54,7 +54,7 @@ def coverage():
 def build(type, clean, build_arg, unit_tests):
     logging.info("building... type:{0} clean:{1} build:{2} unit-test?:{3}".format(type, clean, build_arg, unit_tests))
     if clean:
-        if os.path.isdir():
+        if os.path.isdir(SHIP_FOLDER):
             logging.info("removing ship folder..")
             shutil.rmtree(SHIP_FOLDER)
     sys.exit(run("gcc {0} {1} {2} {3}".format(type, clean, build_arg, unit_tests)))
