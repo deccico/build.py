@@ -2,14 +2,19 @@
 
 import argparse
 import logging
+import os
+import shutil
 import subprocess
 import sys
+import time
 
 
 APP = "Build.py"
 VERSION = '0.1.0'
 DESCRIPTION = 'Pyhton build tool.'
 LONG_DESCRIPTION = '"He must trust, and he must have faith. And so he builds, because what is building, and rebuilding and rebuilding again, but an act of faith?" Dave Eggers'
+PAUSE_SECONDS = 10
+SHIP_FOLDER = "SHIP"
 
 if sys.version_info <= (2, 4) or sys.version_info >= (3, 0):
     error = "ERROR: your Python version is not supported. Please use build.py with Python 2.7.x"
@@ -30,17 +35,16 @@ def run(cmd):
     logging.info("running: {0}".format(cmd))
     return subprocess.call(cmd, shell=True)
 
-
 def pre_build_checks():
     logging.info("pre_build_checks checking...")
     modified_files = not run('git status -s|grep -E "^?M "')
     added_files = not run('git status -s|grep -E "^?A "')
     if modified_files:
-        logging.error("You have uncommited, modified changes in your git repo.")
-        sys.exit(1)
+        logging.warning("You have uncommited, modified changes in your git repo.")
     if added_files:
         logging.error("You have uncommited, added files in your git repo.")
-        sys.exit(1)
+    logging.warning("Pausing for {0} before continuing...".format(PAUSE_SECONDS))
+    time.sleep(PAUSE_SECONDS)
 
 def coverage():
     logging.info("running code coverage..")
@@ -48,8 +52,11 @@ def coverage():
 
 def build(type, clean, build_arg, unit_tests):
     logging.info("building... type:{0} clean:{1} build:{2} unit-test?:{3}".format(type, clean, build_arg, unit_tests))
+    if clean:
+        if os.path.isdir():
+            logging.info("removing ship folder..")
+            shutil.rmtree(SHIP_FOLDER)
     sys.exit(run("gcc {0} {1} {2} {3}".format(type, clean, build_arg, unit_tests)))
-
 
 def validate_options(args):
     #subcommands are mandatory in Python 2.x therefore we need to implement our own validation..
