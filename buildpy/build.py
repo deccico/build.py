@@ -45,7 +45,7 @@ def pre_build_checks():
         logging.error("You have uncommited, added files in your git repo.")
     if modified_files or added_files:
         logging.warning("Pausing for {0} before continuing...".format(PAUSE_SECONDS))
-    time.sleep(PAUSE_SECONDS)
+        time.sleep(PAUSE_SECONDS)
 
 def coverage():
     logging.info("running code coverage..")
